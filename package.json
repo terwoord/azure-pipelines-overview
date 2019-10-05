@@ -1,7 +1,10 @@
 {
 	"name": "azure-pipelines-overview",
 	"displayName": "Azure Pipelines Overview",
+	"publisher": "terWoordComputers",
 	"description": "Gives a tree representation of your pipeline script",
+	"repository": "https://github.com/terwoord/azure-pipelines-overview",
+	"homepage": "https://github.com/terwoord/azure-pipelines-overview",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.38.0"
