@@ -34,27 +34,38 @@ export class OverviewNode {
 			case NodeType.Step:
 				if (this.data.type === "MAP"){
                     // get display name
-					var value = this.getStringValueByName(this.data, "displayName");
+					var value = this.getStringValueByNameInMap(this.data, "displayName");
 					if (value) {
 						this._label = value;
 						return;
                     }
                     // get task title
-					value = this.getStringValueByName(this.data, "task");
+					value = this.getStringValueByNameInMap(this.data, "task");
 					if (value) {
 						this._label = value;
 						return;
 					}
 
-					value = this.getStringValueByName(this.data, "job");
+					value = this.getStringValueByNameInMap(this.data, "job");
 					if (value) {
 						this._label = value;
 						return;
 					}
 
-					value = this.getStringValueByName(this.data, "template");
+					value = this.getStringValueByNameInMap(this.data, "template");
 					if (value) {
-						this._label = value;
+						var parameters = this.getItemsInProperty(this.data, "parameters");
+						if (parameters) {
+							value = this.getStringValueByNameInItems(parameters, "displayName");
+							if(value) {
+								this._label = value;
+								return;
+							}
+						}
+						value = this.getStringValueByNameInMap(this.data, "template");
+						if (value) {
+							this._label = value;
+						}
 						return;
 					}
 
@@ -73,7 +84,7 @@ export class OverviewNode {
 		return this._label;
 	}
 
-	private getStringValueByName(map: YAML.ast.Map, name: string) {
+	private getStringValueByNameInMap(map: YAML.ast.Map, name: string) {
 		var result: string | null = null;
 
 		map.items.some(item =>{
@@ -81,6 +92,38 @@ export class OverviewNode {
 			  && (item.value.type === "PLAIN" || item.value.type === "QUOTE_SINGLE" || item.value.type === "QUOTE_DOUBLE")
 			  && item.value.value) {
 				result = item.value.value.toString();
+				return true;
+			}
+			return false;
+		});
+
+		return result;
+	}
+
+	private getStringValueByNameInItems(items: (YAML.ast.Pair | YAML.ast.Merge)[], name: string) {
+		var result: string | null = null;
+
+		items.some(item =>{
+			if (item.key && item.key.type === "PLAIN" && item.key.value === name && item.value
+			  && (item.value.type === "PLAIN" || item.value.type === "QUOTE_SINGLE" || item.value.type === "QUOTE_DOUBLE")
+			  && item.value.value) {
+				result = item.value.value.toString();
+				return true;
+			}
+			return false;
+		});
+
+		return result;
+	}
+
+	private getItemsInProperty(map: YAML.ast.Map, name: string) {
+		var result: (YAML.ast.Pair | YAML.ast.Merge)[] = [];
+
+		map.items.some(item =>{
+			if (item.key && item.key.type === "PLAIN" && item.key.value === name && item.value
+			  && item.value.type === "MAP"
+			  && item.value.items) {
+				result = item.value.items;
 				return true;
 			}
 			return false;
