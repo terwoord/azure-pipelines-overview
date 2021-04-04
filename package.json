@@ -5,7 +5,7 @@
 	"description": "Gives a tree representation of your pipeline script",
 	"repository": "https://github.com/terwoord/azure-pipelines-overview",
 	"homepage": "https://github.com/terwoord/azure-pipelines-overview",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.38.0"
 	},
