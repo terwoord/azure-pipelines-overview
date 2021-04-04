@@ -1,4 +1,5 @@
 import * as YAML from 'yaml';
+import * as YAMLTypes from 'yaml/types';
 
 export enum NodeType {
 	Job,
@@ -6,14 +7,14 @@ export enum NodeType {
 }
 
 export class OverviewNode {
-	constructor(nodeType: NodeType, data: YAML.ast.AstNode) {
+	constructor(nodeType: NodeType, data: YAMLTypes.YAMLMap) {
 		this.NodeType = nodeType;
 		this.data = data;
 
 		this.determineLabel();
 	}
 
-	public data: YAML.ast.AstNode;
+	public data: YAMLTypes.YAMLMap;
 
 	public NodeType: NodeType;
 
@@ -21,7 +22,7 @@ export class OverviewNode {
 		switch(this.NodeType) {
 			case NodeType.Job:
 				if(this.data.type === "MAP"){
-					this.data.items.some(item => {
+					this.data.items.some((item: any) => {
 						if (item.type === "PAIR" && item.key && item.key.type === "PLAIN" && item.value && item.value.type === "PLAIN"){
 							if (item.key.value === "job"){
 								this._label = "Job '" + item.value.value + "'";
@@ -84,7 +85,7 @@ export class OverviewNode {
 		return this._label;
 	}
 
-	private getStringValueByNameInMap(map: YAML.ast.Map, name: string) {
+	private getStringValueByNameInMap(map: YAMLTypes.YAMLMap, name: string) {
 		var result: string | null = null;
 
 		map.items.some(item =>{
@@ -100,7 +101,7 @@ export class OverviewNode {
 		return result;
 	}
 
-	private getStringValueByNameInItems(items: (YAML.ast.Pair | YAML.ast.Merge)[], name: string) {
+	private getStringValueByNameInItems(items: (YAMLTypes.Pair | YAMLTypes.Merge)[], name: string) {
 		var result: string | null = null;
 
 		items.some(item =>{
@@ -116,8 +117,8 @@ export class OverviewNode {
 		return result;
 	}
 
-	private getItemsInProperty(map: YAML.ast.Map, name: string) {
-		var result: (YAML.ast.Pair | YAML.ast.Merge)[] = [];
+	private getItemsInProperty(map: YAMLTypes.YAMLMap, name: string) {
+		var result: (YAMLTypes.Pair | YAMLTypes.Merge)[] = [];
 
 		map.items.some(item =>{
 			if (item.key && item.key.type === "PLAIN" && item.key.value === name && item.value
@@ -155,10 +156,10 @@ export class OverviewNode {
 				var result: OverviewNode[] = [];
 				if (this.data.type === "MAP" && this.data.items)
 				{
-					this.data.items.some(item => {
+					this.data.items.some(item=>{
 						if (item && item.type === "PAIR" && item.key && item.key.type === "PLAIN" && item.key.value === "steps" && item.value && item.value.type === "SEQ") 
 						{
-							item.value.items.forEach(step => {
+							(<YAMLTypes.YAMLMap[]>item.value.items).forEach(step => {
 								if (step) {
 									result.push(new OverviewNode(NodeType.Step, step));
 								}

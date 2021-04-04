@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as YAML from 'yaml';
+import * as YAMLTypes from 'yaml/types';
 import { OverviewDataProvider } from './dataProvider';
 import { OverviewNode } from './overviewNode';
 
@@ -41,14 +42,13 @@ export class OverviewExplorer {
 			{
 				const documentText = this.editor.document.getText();
 				var filteredText = documentText.replace(/(?:\r)/g, "\\r").replace(/(?:\n)/g, "\\n");
-				var doc = YAML.parseDocument(documentText);
-
+				var doc: YAML.Document = YAML.parseDocument(documentText);
+				
 				if (doc && doc.contents && doc.contents.type === "MAP"){
-					doc.contents.items.some(item =>{
+					doc.contents.items.some((item: any) =>{
 						if (item.type === "PAIR" && item.key && item.key.type === "PLAIN" && item.value && item.value.type === "SEQ"){
-							if (item.key.value === "jobs"){
-								
-								this.treeDataProvider.setData(item.value.items);
+							if (item.key.value === "jobs"){								
+								this.treeDataProvider.setData((<YAMLTypes.YAMLSeq>item.value).items);
 								return true;
 							}
 						}

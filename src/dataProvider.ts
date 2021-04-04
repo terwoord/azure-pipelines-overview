@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as YAML from 'yaml';
+import * as YAMLTypes from 'yaml/types';
 import { OverviewNode, NodeType } from './overviewNode';
 
 export class OverviewDataProvider implements vscode.TreeDataProvider<OverviewNode>, vscode.TextDocumentContentProvider  {
@@ -47,10 +48,10 @@ export class OverviewDataProvider implements vscode.TreeDataProvider<OverviewNod
 		}
 	}
 
-	private data: Array<YAML.ast.AstNode | null> | null = null;
+	private data: Array<YAMLTypes.YAMLMap | null> | null = null;
 
-	public setData(data: Array<YAML.ast.AstNode | null> | null): void {
+	public setData(data: Array<YAMLTypes.YAMLMap | null> | null): void {
 		this.data = data;
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(null);
 	}
 }
