@@ -34,6 +34,18 @@ export class OverviewExplorer {
 		}
 	}
 
+	private fillProvider(items: any, rootKey: string): boolean {
+		return items.some((item: any) =>{
+			if (item.type === "PAIR" && item.key && item.key.type === "PLAIN" && item.value && item.value.type === "SEQ"){
+				if (item.key.value === rootKey){								
+					this.treeDataProvider.setData((<YAMLTypes.YAMLSeq>item.value).items);
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
 	private refresh(): void {
 		this.editor = vscode.window.activeTextEditor;
 
@@ -45,15 +57,9 @@ export class OverviewExplorer {
 				var doc: YAML.Document = YAML.parseDocument(documentText);
 				
 				if (doc && doc.contents && doc.contents.type === "MAP"){
-					doc.contents.items.some((item: any) =>{
-						if (item.type === "PAIR" && item.key && item.key.type === "PLAIN" && item.value && item.value.type === "SEQ"){
-							if (item.key.value === "jobs"){								
-								this.treeDataProvider.setData((<YAMLTypes.YAMLSeq>item.value).items);
-								return true;
-							}
-						}
-						return false;
-					});
+					if (!this.fillProvider(doc.contents.items, 'jobs')){
+						this.fillProvider(doc.contents.items, 'steps');
+					}
 				}
 			}
 		}

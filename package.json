@@ -41,16 +41,17 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.6",
-		"@types/node": "^10.12.21",
-		"@types/vscode": "^1.38.0",
+		"@types/glob": "^7.2.0",
+		"@types/node": "^10.17.60",
+		"@types/vscode": "^1.66.0",
 		"@types/yaml": "^1.0.2",
-		"glob": "^7.1.4",
+		"glob": "^7.2.0",
+		"@types/mocha": "^5.2.6",
 		"mocha": "^6.1.4",
-		"typescript": "^3.3.1",
 		"tslint": "^5.12.1",
-		"vscode-test": "^1.2.0"
+		"typescript": "^3.9.10",
+		"vscode-test": "^1.6.1",
+		"minimist": "^1.2.6"
 	},
 	"dependencies": {
 		"yaml": "^1.10.2"
